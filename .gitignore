@@ -1,12 +1,9 @@
-# Standard Python Gitignore
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-.env
-.venv
-venv/
-ENV/
-bin/
+*.so
+.Python
 build/
 develop-eggs/
 dist/
@@ -22,13 +19,29 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-.pytest_cache/
-.coverage
-htmlcov/
-.ipynb_checkpoints/
-data/processed/*
-!data/processed/.gitkeep
-models/*
-!models/.gitkeep
-data/*
-data/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data
+data/processed/
+models/
+reports/figures/
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Streamlit
+.streamlit/
