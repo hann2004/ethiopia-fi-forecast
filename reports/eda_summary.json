@@ -1,0 +1,75 @@
+{
+  "analysis_date": "2026-01-31 18:19:28",
+  "dataset_summary": {
+    "total_records": 51,
+    "observations": 31,
+    "events": 10,
+    "impact_links": 7,
+    "targets": 3
+  },
+  "account_ownership": {
+    "data_points": 5,
+    "timeline": [
+      {
+        "year": 2011,
+        "value_numeric": 14.0
+      },
+      {
+        "year": 2014,
+        "value_numeric": 22.0
+      },
+      {
+        "year": 2017,
+        "value_numeric": 35.0
+      },
+      {
+        "year": 2021,
+        "value_numeric": 46.0
+      },
+      {
+        "year": 2024,
+        "value_numeric": 49.0
+      }
+    ],
+    "growth_rates": [
+      57.14285714285714,
+      59.09090909090909,
+      31.428571428571427,
+      6.521739130434782
+    ]
+  },
+  "impact_links_summary": {
+    "total": 7,
+    "by_event": {
+      "EVT_0001": 2,
+      "EVT_0003": 2,
+      "EVT_0004": 2
+    },
+    "evidence_basis": {
+      "empirical": 4,
+      "literature": 2,
+      "theoretical": 1
+    },
+    "avg_lag_months": 9.571428571428571,
+    "avg_impact_estimate": 1.7552127048002297
+  },
+  "key_insights": [
+    "1. Growth Paradox Confirmed: Account ownership growth slowed to +3pp (2021-2024) despite Telebirr and M-Pesa launches",
+    "2. Mobile Money Success: Mobile money accounts doubled from 4.7% to 9.45% (2021-2024)",
+    "3. Digital Tipping Point: P2P transactions now exceed ATM withdrawals (ratio: 1.08)",
+    "4. Event-Impact Relationships: 7 impact links created connecting events to indicators",
+    "5. Strongest Impacts: M-Pesa launch shows highest impact estimate (1.58 growth rate)",
+    "6. Evidence Quality: 4 empirical, 2 literature, 1 theoretical evidence bases used",
+    "7. Average Lag: Impact effects take ~10 months to materialize on average",
+    "8. Gender Data Gap: Limited gender-disaggregated data available for analysis",
+    "9. Infrastructure Correlation: 4G expansion correlates with digital adoption",
+    "10. Forecasting Challenge: Sparse time series data limits statistical modeling"
+  ],
+  "figures_generated": [
+    "account_ownership_timeline.png",
+    "growth_rate_comparison.png",
+    "account_vs_mobile_money.png",
+    "impact_network.png",
+    "p2p_vs_atm.png"
+  ]
+}
