@@ -1,74 +1,93 @@
 # Data Enrichment Log
 
-## Summary of Changes
-- Date: 2026-01-31
-- Original records: 43
-- New observations added: 1
-- Impact links created: 7
-- Total enriched records: 51
+This log documents additions to the unified dataset, with sources and rationale.
 
-## New Observations Added
+## Global Findex 2024: Ethiopia Account Ownership = 49% (Access)
 
-### 1. 2011 Account Ownership Data
-- **Date Added**: 2026-01-30
-- **Record ID**: OBS_0031
-- **Indicator**: Account Ownership Rate
-- **Value**: 14%
-- **Date**: 2011-12-31
-- **Source**: Global Findex 2011
-- **Confidence**: High
-- **Reason**: Missing baseline data for trend analysis
-- **Collected By**: Your Name  # CHANGE THIS
+source_url: https://www.worldbank.org/globalfindex
 
-## Impact Links Created
+original_text: In 2024, 49 percent of adults in Ethiopia reported having an account at a financial institution or personally using mobile money in the past 12 months.
 
-Total: 7 impact links created
+confidence: high
 
-### By Event:
+collected_by: Nabi
 
-**Telebirr Launch** (EVT_0001):
-- IMP_001: → ACC_MM_ACCOUNT
-  - Impact: increase (high)
-  - Lag: 6 months
-  - Evidence: empirical
-- IMP_002: → ACC_OWNERSHIP
-  - Impact: increase (medium)
-  - Lag: 12 months
-  - Evidence: empirical
+collection_date: 2026-02-02
 
-**M-Pesa Ethiopia Launch** (EVT_0003):
-- IMP_003: → USG_P2P_COUNT
-  - Impact: increase (high)
-  - Lag: 3 months
-  - Evidence: empirical
-- IMP_004: → ACC_MM_ACCOUNT
-  - Impact: increase (medium)
-  - Lag: 9 months
-  - Evidence: literature
+notes: Core Access target value to anchor forecasts and trend analysis.
 
-**Fayda Digital ID Program Rollout** (EVT_0004):
-- IMP_005: → ACC_FAYDA
-  - Impact: increase (high)
-  - Lag: 1 months
-  - Evidence: empirical
-- IMP_006: → ACC_OWNERSHIP
-  - Impact: increase (medium)
-  - Lag: 24 months
-  - Evidence: theoretical
 
-**** ():
-- IMP_007: → ACC_MM_ACCOUNT
-  - Impact: increase (medium)
-  - Lag: 12 months
-  - Evidence: literature
+## Global Findex 2024: Mobile money account ownership = 9.45% (Usage component)
 
-## Data Quality Notes
-1. Impact links are estimates based on available evidence
-2. Confidence levels vary (mostly medium)
-3. Some estimates based on comparable country evidence
-4. The 2011 data point is critical for establishing baseline growth rates
+source_url: https://www.worldbank.org/globalfindex
 
-## Next Steps
-1. Proceed to Task 2: Exploratory Data Analysis
-2. Validate impact link assumptions with correlation analysis
-3. Use enriched dataset for forecasting models
+original_text: Mobile money account ownership among adults in Ethiopia was approximately 9.45 percent in 2024.
+
+confidence: medium
+
+collected_by: Nabi
+
+collection_date: 2026-02-02
+
+notes: Supports Usage trajectory; aligns with operator-reported registrations vs survey usage.
+
+
+## Global Findex 2024: Made or received a digital payment ≈ 35%
+
+source_url: https://www.worldbank.org/globalfindex
+
+original_text: About 35 percent of adults reported making or receiving a digital payment in the past 12 months.
+
+confidence: medium
+
+collected_by: Nabi
+
+collection_date: 2026-02-02
+
+notes: Usage indicator baseline; used in scenario modeling.
+
+
+## Ethio Telecom Telebirr: 54M+ users since 2021 launch
+
+source_url: https://www.ethiotelecom.et/telebirr/
+
+original_text: Telebirr has grown to over 54 million users since launching in May 2021.
+
+confidence: medium
+
+collected_by: Nabi
+
+collection_date: 2026-02-02
+
+notes: Event: product_launch; used for impact_link to mobile money usage and account ownership.
+
+
+## Safaricom M-Pesa Ethiopia: 10M+ users by 2025
+
+source_url: https://www.safaricom.et/newsroom
+
+original_text: M-Pesa entered Ethiopia in 2023 and surpassed 10 million customers in 2025.
+
+confidence: medium
+
+collected_by: Nabi
+
+collection_date: 2026-02-02
+
+notes: Event: product_launch; impact on mobile money usage with lag structure.
+
+
+## Interoperable P2P digital transfers surpassed ATM cash withdrawals
+
+source_url: https://ethswitch.com/
+
+original_text: For the first time, interoperable P2P transfers have exceeded ATM cash withdrawals in Ethiopia.
+
+confidence: low
+
+collected_by: Nabi
+
+collection_date: 2026-02-02
+
+notes: Event: infrastructure/market milestone; potential positive effect on Usage.
+
