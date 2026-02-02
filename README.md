@@ -180,3 +180,24 @@ streamlit run dashboard/app.py
 
 ---
 **Current Status (Feb 1, 2026)**: Task 1 and Task 2 completed; Task 3–5 to follow.
+
+
+## Dashboard (Task 5)
+
+- Overview: Key metrics (latest account ownership, P2P/ATM crossover ratio, YoY growth), trimmed impact associations table with download.
+- Trends: Interactive indicator time series with date range selector; channel comparison (P2P vs ATM).
+- Forecasts: Scenario visualizations with confidence intervals; baseline vs with-events selection; download filtered forecast.
+- Inclusion Projections: ACC_OWNERSHIP progress toward 60% with scenario/model selector and milestone detection.
+
+### Run Locally
+
+```bash
+pip install -r requirements.txt
+streamlit run dashboard/app.py
+```
+
+### Data prerequisites
+- Combined dataset: data/processed/ethiopia_fi_unified_data_combined.csv
+- Forecast table: reports/forecast_access_usage_2025_2027.csv (generated in Task 4)
+- Optional: data/processed/event_indicator_association_trimmed.csv for association table
+
