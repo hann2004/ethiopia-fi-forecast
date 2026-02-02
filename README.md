@@ -126,3 +126,18 @@ The combined dataset organizes rows by `record_type`:
 - CI run queued: try workflow dispatch, re-run jobs, or push a no-op commit
 - Dashboard errors: confirm data paths exist; run notebooks to generate required CSVs
 
+
+
+## Screenshots
+
+### Dashboard Landing
+![Dashboard Landing](reports/LAnding_page.png)
+
+### Trends Page
+![Trends](reports/trends.png)
+
+### Forecasts Page
+![Forecasts](reports/forecasts.png)
+
+### Demo (GIF)
+![Dashboard Demo](reports/dashboard.gif)
