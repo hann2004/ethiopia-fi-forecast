@@ -38,7 +38,7 @@ obs, events, impact_links = load_combined()
 forecast_df = load_forecast()
 
 # Sidebar navigation
-section = st.sidebar.radio('Section', ['Overview', 'Trends', 'Forecasts', 'Inclusion Projections'])
+section = st.sidebar.radio('Section', ['Overview', 'Trends', 'Forecasts', 'Inclusion Projections', 'Downloads'])
 
 # Utility: latest value per indicator
 def latest_value(obs, code):
@@ -195,3 +195,48 @@ elif section == 'Inclusion Projections':
             # Progress bars
             for _, r in acc.iterrows():
                 st.progress(min(1.0, float(r[y_col])/60.0), text=f"{int(r['year'])}: {r[y_col]:.1f}% of 60% target")
+# Downloads
+elif section == 'Downloads':
+    st.subheader('Data & Exports')
+    # Combined dataset download (optionally filtered)
+    if obs is None:
+        st.info('Combined dataset not found. Ensure processed CSV exists.')
+    else:
+        st.markdown('### Combined Dataset')
+        codes = sorted(obs['indicator_code'].dropna().unique().tolist())
+        filt_code = st.selectbox('Filter by indicator (optional)', options=['(all)'] + codes, index=0)
+        df_dl = obs.copy() if filt_code=='(all)' else obs[obs['indicator_code']==filt_code].copy()
+        st.dataframe(df_dl[['observation_date','indicator_code','value_numeric']].head(50), use_container_width=True)
+        st.download_button('Download combined (CSV)', df_dl.to_csv(index=False).encode('utf-8'), file_name=('combined_filtered.csv' if filt_code!='(all)' else 'combined.csv'), mime='text/csv')
+
+    st.markdown('---')
+    # Forecast table download
+    st.markdown('### Forecast Table (Task 4)')
+    if forecast_df is None or forecast_df.empty:
+        st.info('No forecast table found. Generate via Task 4.')
+    else:
+        tgt = st.selectbox('Target', options=sorted(forecast_df['target'].unique().tolist()))
+        scen = st.selectbox('Scenario', options=['pessimistic','base','optimistic'], index=1)
+        mdl = st.selectbox('Model', options=['baseline_forecast','with_events_forecast'], index=1)
+        sub = forecast_df[(forecast_df['target']==tgt) & (forecast_df['scenario']==scen)].copy()
+        st.dataframe(sub[['target','scenario','year',mdl,'lower_95','upper_95','event_delta']], use_container_width=True)
+        st.download_button('Download forecast (filtered CSV)', sub.to_csv(index=False).encode('utf-8'), file_name=f'forecast_{tgt}_{scen}_{mdl}.csv', mime='text/csv')
+
+    st.markdown('---')
+    # Impact association matrix: show heatmap + download
+    st.markdown('### Event–Indicator Association (Trimmed)')
+    if MATRIX_TRIM_CSV.exists():
+        mat = pd.read_csv(MATRIX_TRIM_CSV)
+        # Identify id column for rows
+        id_col = 'event_id' if 'event_id' in mat.columns else mat.columns[0]
+        mat_long = mat.melt(id_vars=[id_col], var_name='indicator', value_name='effect')
+        hm = alt.Chart(mat_long).mark_rect().encode(
+            x=alt.X('indicator:N', title='Indicator'),
+            y=alt.Y(f'{id_col}:N', title='Event'),
+            color=alt.Color('effect:Q', scale=alt.Scale(scheme='redblue'), title='Effect'),
+            tooltip=['indicator','effect', id_col]
+        ).properties(height=400)
+        st.altair_chart(hm, use_container_width=True)
+        st.download_button('Download association matrix (trimmed CSV)', mat.to_csv(index=False).encode('utf-8'), file_name='event_indicator_association_trimmed.csv', mime='text/csv')
+    else:
+        st.info('No trimmed association matrix CSV found.')

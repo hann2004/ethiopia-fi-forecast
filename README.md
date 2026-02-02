@@ -1,203 +1,128 @@
 
-# Forecasting Financial Inclusion in Ethiopia
+# Ethiopia Financial Inclusion — Event Impacts, Forecasts, and Dashboard
 
-Build a forecasting system that tracks Ethiopia's digital financial transformation using time series methods.
+A reproducible workflow to enrich data, analyze event impacts, generate forecasts (2025–2027), and deliver an interactive Streamlit dashboard.
 
-## Overview
-Ethiopia is undergoing a rapid digital financial transformation. Telebirr has grown to over 54 million users since launching in 2021. M-Pesa entered the market in 2023 and now has over 10 million users. For the first time, interoperable P2P digital transfers have surpassed ATM cash withdrawals. Yet according to the 2024 Global Findex survey, only 49% of Ethiopian adults have a financial account; just 3 percentage points higher than in 2021.
-
-This project builds a forecasting system that predicts Ethiopia's progress on the two core dimensions of financial inclusion as defined by the World Bank's Global Findex: Access (Account Ownership Rate) and Usage (Digital Payment Adoption Rate).
-
-## Business Need
-Selam Analytics, a financial technology consulting firm specializing in emerging markets, is engaged by a consortium of stakeholders (development finance institutions, mobile money operators, and the National Bank of Ethiopia) to develop a financial inclusion forecasting system. The consortium wants to understand:
-- What drives financial inclusion in Ethiopia?
-- How do events like product launches, policy changes, and infrastructure investments affect inclusion outcomes?
-- How did inclusion rates change in 2025 and what do forecasts indicate for 2026–2027?
-
-## Global Findex Framework
-The Global Findex Database is the world's most comprehensive demand-side survey of financial inclusion, conducted every three years since 2011.
-
-- **Access (Account Ownership)**: “The share of adults (age 15+) who report having an account (by themselves or together with someone else) at a bank or another type of financial institution or report personally using a mobile money service in the past 12 months.”
-- **Usage (Digital Payments)**: “The share of adults who report using mobile money, a debit or credit card, or a mobile phone to make a payment from an account, or report using the internet to pay bills or to buy something online, in the past 12 months.”
-
-### Ethiopia's Account Ownership Trajectory
-| Year | Account Ownership | Change |
-|------|-------------------|--------|
-| 2011 | 14%               | —      |
-| 2014 | 22%               | +8pp   |
-| 2017 | 35%               | +13pp  |
-| 2021 | 46%               | +11pp  |
-| 2024 | 49%               | +3pp   |
-
-### Usage Indicators (2024)
-- **Mobile money account ownership**: 9.45%
-- **Made or received a digital payment**: ~35%
-- **Used account to receive wages**: ~15%
-
-## Deliverables
-- **Enriched dataset**: Understand and extend the provided financial inclusion dataset.
-- **EDA notebook**: Analyze patterns and relationships in Ethiopia's inclusion data.
-- **Impact modeling**: Quantify how events (policy, product launches, infrastructure) affect indicators.
-- **Forecasts (2025–2027)**: Access and Usage with uncertainty bounds.
-- **Interactive dashboard**: Communicate insights and forecasts to stakeholders.
-
-## Data
-Starter dataset: **ethiopia_fi_unified_data** using a unified schema.
-
-- **record_type** values and design:
-  - **observation**: Measured values (Findex surveys, operator reports, infrastructure data)
-  - **event**: Policies, product launches, market entries, milestones
-  - **impact_link**: Modeled relationships between events and indicators
-  - **target**: Official policy goals (e.g., NFIS-II targets)
-- **Key principle**: Events are categorized by type (policy, product_launch, infrastructure, etc.) but not pre-assigned to pillars. Their effects are captured via impact_link records to keep data unbiased.
-
-Supporting files in this repo:
-- [data/raw/ethiopia_fi_unified_data.csv](data/raw/ethiopia_fi_unified_data.csv)
-- [data/raw/reference_codes.csv](data/raw/reference_codes.csv)
-- [notebooks/02_eda_analysis.ipynb](notebooks/02_eda_analysis.ipynb)
-- README schema notes in this document
-
-Supplementary resource: **Additional Data Points Guide** (external spreadsheet) covering:
-- **A. Alternative Baselines**: IMF FAS, G20 indicators, GSMA, ITU, NBE
-- **B. Direct Correlation**: active accounts, agent density, POS, QR, transaction volumes, ATM density, branches
-- **C. Indirect Correlation**: smartphone penetration, data affordability, gender gap, urbanization, mobile internet, 4G, literacy, electricity, digital ID
-- **D. Market Nuances**: Ethiopia-specific context (P2P dominance, mobile money-only users ~0.5%, bank accessibility, low credit penetration)
-
-Use this to identify additional observations, understand indicators, and contextualize market dynamics.
-
-## Project Structure
-```
-ethiopia-fi-forecast/
-├── .github/workflows/
-│   └── unittests.yml
-├── data/
-│   ├── raw/
-│   │   ├── ethiopia_fi_unified_data.csv
-│   │   └── reference_codes.csv
-│   └── processed/
-├── notebooks/
-│   └── README.md
-├── src/
-│   ├── __init__.py
-├── dashboard/
-│   └── app.py
-├── tests/
-│   └── __init__.py
-├── models/
-├── reports/
-│   └── figures/
-├── requirements.txt
-├── README.md
-└── .gitignore
-```
-
-## Tasks
-- **Task 1: Data Exploration & Enrichment**: Load/explore the unified dataset; add observations, events, and impact_links; document sources and confidence. Status: Completed.
-- **Task 2: Exploratory Data Analysis (EDA)**: Summarize dataset, visualize coverage, analyze Access and Usage, infrastructure/enablers, correlations, and key insights. Status: Completed. See [notebooks/02_eda_analysis.ipynb](notebooks/02_eda_analysis.ipynb).
-- **Task 3: Event Impact Modeling**: Build event-indicator association matrix; model effect size, direction, and lag; validate against observed changes; document methodology. Status: In progress.
-- **Task 4: Forecasting (2025–2027)**: Produce Access and Usage forecasts using trend + event augmentation and scenarios; quantify uncertainty; interpret results. Status: Pending.
-- **Task 5: Dashboard Development**: Streamlit app with overview, trends, forecasts, and inclusion projections; at least 4 interactive visuals; clear run instructions. Status: Pending.
-
-## Branching & Workflow
-- **Create branches**: `task-1`, `task-2`, `task-3`, `task-4`, `task-5`
-- **Minimum essential**: merge via PRs to `main` for each task; use descriptive commit messages.
-- **Documentation**: keep a data enrichment log (e.g., `reports/data_enrichment_log.md`) and methodology notes.
-
-## Setup
-Prerequisites: Python 3.10+ on Linux.
+## Quick Start
 
 ```bash
-# From repo root
-python3 -m venv .venv
-source .venv/bin/activate
+# 1) Create/activate Python env (example)
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-```
 
-## How to Run
-- **Reproduce EDA**:
-  - Open [notebooks/02_eda_analysis.ipynb](notebooks/02_eda_analysis.ipynb) and run all cells.
-- **Run Dashboard (Streamlit)**:
+# 2) Generate artifacts (if not already created)
+python src/build_event_indicator_matrix.py   # writes trimmed association CSV; heatmap if libs available
 
-```bash
-# From repo root
-source .venv/bin/activate
+# 3) Run notebooks (Task 4 forecasting)
+# Open notebooks/04_forecasting_access_usage.ipynb and Run All
+
+# 4) Launch dashboard (Task 5)
 streamlit run dashboard/app.py
 ```
 
-- **Data Paths**: Input data in [data/raw](data/raw) and processed outputs in [data/processed](data/processed).
+## Repository Structure
 
-## Analysis Guidance (Summary)
-- **Dataset overview**: summarize by `record_type`, `pillar`, `source_type`; visualize temporal coverage and confidence distribution.
-- **Access analysis**: account ownership trajectory (2011–2024); growth rates; gender and urban/rural gaps if available; interpret 2021–2024 slowdown.
-- **Usage analysis**: mobile money penetration trend; digital payment adoption patterns; registered vs. active gaps; use cases (P2P, merchant, wages).
-- **Infrastructure & enablers**: 4G coverage, smartphone penetration, ATM density; assess leading indicators.
-- **Event timeline**: timeline of events; overlay on indicators; inspect Telebirr (May 2021), Safaricom entry (Aug 2022), M-Pesa (Aug 2023).
-- **Correlation & links**: explore indicator correlations; leverage `impact_link` records for associations.
+- data/processed/ — unified dataset and derived CSVs
+- notebooks/ — analysis and modeling notebooks
+- reports/ — markdown reports and exports (CSV/PNG)
+- src/ — helper scripts (matrix builder, etc.)
+- dashboard/ — Streamlit application
+- tests/ — pytest checks for core artifacts
+- .github/workflows/ — CI configuration
 
-## Impact Modeling Notes (Planned)
-- **Event-indicator matrix**: rows = events; columns = key indicators (e.g., `ACC_OWNERSHIP`, `ACC_MM_ACCOUNT`, `USG_DIGITAL_PAYMENT`); values = effect estimates.
-- **Effect dynamics**: immediate vs. lagged effects; additive vs. multiplicative; combination of multiple events.
-- **Comparable evidence**: use similar-country studies where local pre/post data is sparse.
-- **Validation**: compare modeled impacts to observed trends (e.g., Telebirr 2021 → 2024 mobile money growth from 4.7% to 9.45%).
+## Data Schema (Unified CSV)
 
-## Forecasting Notes (Planned)
-- **Approach**: trend regression + event augmentation; scenario analysis.
-- **Outputs**: baseline and scenario forecasts for 2025–2027; confidence intervals; visualizations.
-- **Interpretation**: drivers, largest potential impacts, key uncertainties.
+The combined dataset organizes rows by `record_type`:
+- observation: time series points (`indicator_code`, `observation_date`, `value_numeric`)
+- event: dated developments; referenced by impact links
+- impact_link: explicit links from events to indicators with fields: `pillar`, `related_indicator`, `impact_direction`, `impact_magnitude`, `lag_months`, `evidence_basis`, `source_url`
+- target: (optional) target levels for reference
 
-## Dashboard Requirements (Planned)
-- **Overview**: key metrics, P2P/ATM crossover ratio, growth highlights.
-- **Trends**: interactive time series with filters.
-- **Forecasts**: visualization with CI; model selection; milestones.
-- **Inclusion Projections**: progress toward 60% target; scenario selector; answer consortium questions.
+## Task 1 — Data Enrichment
 
-## Communication & Support
-- **Slack**: #all-week-10
-- **Office hours**: Mon–Fri, 08:00–15:00 UTC
-- **Tutors**: Kerod, Mahbubah, Filimon
+- Input: unified CSV at data/processed/ethiopia_fi_unified_data_combined.csv
+- Output: updated enrichment log and validated fields
+- Artifacts:
+  - reports/data_enrichment_log.md — added entries with `source_url`, `original_text`, `confidence`, `collected_by`, `collection_date`, `notes`
 
-## Key Dates
-- **Challenge Introduction**: Wed, 28 Jan 2026 (10:30 AM UTC)
-- **Interim Submission**: Sun, 01 Feb 2026 (8:00 PM UTC)
-- **Final Submission**: Tue, 03 Feb 2026 (8:00 PM UTC)
+## Task 2 — EDA and Reporting
 
-## Submission Requirements
-- **Interim**: repo with Task 1 (enriched dataset + docs) and Task 2 (EDA with visuals); interim report with data enrichment summary, 5+ insights, preliminary event-indicator observations, limitations.
-- **Final**: repo with all tasks completed and documented; final report (blog format) with executive summary, methodology, key insights, impact model, forecasts with uncertainty, dashboard screenshots, limitations and future work.
+- Notebook: notebooks/02_eda_analysis.ipynb
+- Report: reports/eda_report.md
+- Figures (examples): reports/figures/account_ownership_timeline.png, growth_rate_comparison.png, p2p_vs_atm.png
+- Notes: paths in notebooks use `../data/processed/...` to reference the combined CSV.
 
-## References
-- Global Findex: worldbank.org/globalfindex; methodology; microdata
-- IMF Financial Access Survey: data.imf.org/FAS
-- GSMA State of the Industry Report: gsma.com/sotir
-- World Bank: Financial Inclusion overview
-- Demirgüç-Kunt et al. (2018): The Global Findex Database 2017
-- IMF: Financial Inclusion and Economic Growth (SDN 15/17)
-- CGAP: Beyond the Findex
-- FSD Kenya: Administrative data tracking
-- Suri & Jack (2016): Long-run impacts of M-Pesa
-- Blumenstock et al.: Mobile phone metadata and wealth
-- Ethiopia sources: NBE, EthSwitch, Ethio Telecom, Fayda Digital ID, Shega Media
+## Task 3 — Event Impact Modeling
 
----
-**Current Status (Feb 1, 2026)**: Task 1 and Task 2 completed; Task 3–5 to follow.
+- Notebook: notebooks/03_event_impact_modeling.ipynb
+- Method:
+  - Build event–indicator association matrix (sum of `effect = magnitude × direction` per link)
+  - Time-distributed effects via a ramp over `lag_months`
+  - Diagnostics, trimmed matrix, and top impacts summary
+- Script: src/build_event_indicator_matrix.py
+  - Writes: data/processed/event_indicator_association_trimmed.csv
+  - Tries to save heatmap PNG (skips gracefully if plotting libs missing)
+- Artifacts:
+  - reports/event_impact_methodology.md
+  - reports/event_impact_validation.md
+  - reports/impact_links_missing_fields.csv (audit)
 
+## Task 4 — Forecasting Access & Usage (2025–2027)
 
-## Dashboard (Task 5)
+- Notebook: notebooks/04_forecasting_access_usage.ipynb
+- Targets:
+  - ACC_OWNERSHIP (%)
+  - Digital usage: percent series if available; else `USG_P2P_COUNT` as volume proxy
+- Models:
+  - Anchored linear trend (anchor at 2024), RMSE-based CI (inflated to 15% band when few points)
+  - Event-augmented deltas from Task 3 timelines
+  - Scenarios: pessimistic/base/optimistic via slope and event multipliers
+- Artifacts:
+  - reports/forecast_access_usage_2025_2027.csv
+  - reports/figures/forecast_access_usage.png (note: reports/figures is git-ignored by default)
+  - reports/forecast_interpretation.md
 
-- Overview: Key metrics (latest account ownership, P2P/ATM crossover ratio, YoY growth), trimmed impact associations table with download.
-- Trends: Interactive indicator time series with date range selector; channel comparison (P2P vs ATM).
-- Forecasts: Scenario visualizations with confidence intervals; baseline vs with-events selection; download filtered forecast.
-- Inclusion Projections: ACC_OWNERSHIP progress toward 60% with scenario/model selector and milestone detection.
+## Task 5 — Dashboard (Streamlit)
 
-### Run Locally
+- App: dashboard/app.py
+- Sections:
+  - Overview: key metrics, P2P/ATM crossover ratio, association matrix preview + download
+  - Trends: interactive time series with date range selector; P2P vs ATM comparison
+  - Forecasts: scenario plots with confidence intervals; baseline vs with-events; table + downloads
+  - Inclusion Projections: progress toward 60% target with scenario/model selector and milestone detection
+  - Downloads: filtered combined data, filtered forecasts, impact heatmap + CSV download
+- Run:
+  - `streamlit run dashboard/app.py`
 
-```bash
-pip install -r requirements.txt
-streamlit run dashboard/app.py
-```
+## CI/CD
 
-### Data prerequisites
-- Combined dataset: data/processed/ethiopia_fi_unified_data_combined.csv
-- Forecast table: reports/forecast_access_usage_2025_2027.csv (generated in Task 4)
-- Optional: data/processed/event_indicator_association_trimmed.csv for association table
+- Workflow: .github/workflows/unittests.yml — runs on push/PR to main
+- Dependencies: requirements-ci.txt (pytest-only) for fast CI
+- Tests:
+  - tests/test_forecasting_outputs.py — validates presence and schema of Task 4 artifacts, with PNG check skipped if git-ignored
+
+## Repro Steps (End-to-End)
+
+1. Ensure combined CSV is present: data/processed/ethiopia_fi_unified_data_combined.csv
+2. Build association matrix:
+   - `python src/build_event_indicator_matrix.py`
+3. Run Task 4 notebook to generate forecasts and interpretation:
+   - Open and execute notebooks/04_forecasting_access_usage.ipynb
+4. Launch the dashboard:
+   - `streamlit run dashboard/app.py`
+
+## Branching & PRs
+
+- task-1, task-2, task-3, task-4, task-5 branches merged into `main` via PRs
+- Suggested commit messages:
+  - Task 4: "Forecasts (2025–2027) with anchored scenarios, CI, interpretation"
+  - Task 5: "Streamlit dashboard: overview, trends, forecasts, inclusion projections, downloads"
+
+## Troubleshooting
+
+- Heatmap PNG missing: install plotting libs and re-run builder script or notebooks
+  - `pip install matplotlib seaborn`
+  - `python src/build_event_indicator_matrix.py`
+- CI run queued: try workflow dispatch, re-run jobs, or push a no-op commit
+- Dashboard errors: confirm data paths exist; run notebooks to generate required CSVs
 
