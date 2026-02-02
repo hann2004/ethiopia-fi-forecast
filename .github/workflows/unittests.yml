@@ -1,6 +1,7 @@
 name: Unit Tests
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
@@ -8,7 +9,8 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -22,3 +24,7 @@ jobs:
     - name: Run tests
       run: |
         pytest
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
