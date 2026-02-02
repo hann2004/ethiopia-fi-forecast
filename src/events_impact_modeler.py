@@ -454,3 +454,58 @@ def apply_event_effects_series(observations: pd.DataFrame, effects: pd.DataFrame
         if start in pred.index:
             pred.loc[start:] = pred.loc[start:] + row['effect_value']
     return pd.DataFrame({'base': base, 'predicted': pred})
+
+
+
+def _select_effect_column(df):
+    import pandas as pd
+    for c in ['impact_magnitude','impact_estimate']:
+        if c in df.columns:
+            s = pd.to_numeric(df[c], errors='coerce')
+            if s.notna().any() and (s.abs() > 0).any():
+                return c
+    return None
+
+# Override build_association_matrix to use selector
+def build_association_matrix(events: pd.DataFrame, impact_links: pd.DataFrame):
+    imp = impact_links.copy()
+    col = _select_effect_column(imp)
+    if col is None:
+        imp['effect_value'] = imp['impact_direction'].map({'positive':1,'negative':-1}).fillna(0)
+    else:
+        imp['effect_value'] = pd.to_numeric(imp[col], errors='coerce').fillna(0)
+    ev = events.rename(columns={'record_id':'event_id'})
+    imp = imp.rename(columns={'parent_id':'event_id'})
+    # Event date resolution
+    edc = next((c for c in ['event_date','observation_date','date','period_start'] if c in ev.columns), None)
+    if edc is None:
+        ev['event_date'] = pd.NaT
+    else:
+        ev['event_date'] = pd.to_datetime(ev[edc], errors='coerce')
+    merged = pd.merge(imp, ev[['event_id','event_name','event_date','category']] if 'event_name' in ev.columns else ev[['event_id','event_date','category']], on='event_id', how='left')
+    if 'related_indicator' not in merged.columns and 'indicator_code' in merged.columns:
+        merged['related_indicator'] = merged['indicator_code']
+    row_label = 'event_name' if 'event_name' in merged.columns else 'event_id'
+    assoc = merged.pivot_table(index=row_label, columns='related_indicator', values='effect_value', aggfunc='mean', fill_value=0)
+    return assoc
+
+# Override build_event_effects with selector and date handling
+def build_event_effects(impact_links: pd.DataFrame, events: pd.DataFrame) -> pd.DataFrame:
+    import pandas as pd
+    imp = impact_links.rename(columns={'parent_id':'event_id'})
+    ev = events.rename(columns={'record_id':'event_id'})
+    edc = next((c for c in ['event_date','observation_date','date','period_start'] if c in ev.columns), None)
+    if edc is None:
+        ev['event_date'] = pd.NaT
+    else:
+        ev['event_date'] = pd.to_datetime(ev[edc], errors='coerce')
+    merged = pd.merge(imp, ev[['event_id','event_date']], on='event_id', how='left')
+    col = _select_effect_column(merged)
+    if col is None:
+        merged['effect_value'] = merged['impact_direction'].map({'positive':1,'negative':-1}).fillna(0)
+    else:
+        merged['effect_value'] = pd.to_numeric(merged[col], errors='coerce').fillna(0)
+    merged['lag_months'] = pd.to_numeric(merged['lag_months'], errors='coerce').fillna(0).astype(int) if 'lag_months' in merged.columns else 0
+    if 'related_indicator' not in merged.columns and 'indicator_code' in merged.columns:
+        merged['related_indicator'] = merged['indicator_code']
+    return merged[['event_id','event_date','related_indicator','effect_value','lag_months']]
