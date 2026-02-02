@@ -1,12 +1,11 @@
 
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 from pathlib import Path
 
 DATA_PATH = Path('data/processed/ethiopia_fi_unified_data_combined.csv')
 OUT_CSV = Path('data/processed/event_indicator_association.csv')
-OUT_PNG = Path('reports/figures/event_indicator_heatmap.png')
+OUT_TRIM = Path('data/processed/event_indicator_association_trimmed.csv')
+OUT_PNG = Path('reports/figures/event_indicator_heatmap_trimmed.png')
 
 # Load
 df = pd.read_csv(DATA_PATH)
@@ -32,15 +31,24 @@ links['effect'] = links['mag_num'] * links['dir_num']
 col_name = 'related_indicator' if 'related_indicator' in links.columns else 'indicator_code'
 mat = links.pivot_table(index='event_id', columns=col_name, values='effect', aggfunc='sum', fill_value=0)
 
-# Save csv
+# Save full matrix
 OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
 mat.to_csv(OUT_CSV)
 
-# Plot heatmap
-OUT_PNG.parent.mkdir(parents=True, exist_ok=True)
-plt.figure(figsize=(10,8))
-sns.heatmap(mat, cmap='RdBu_r', center=0)
-plt.title('Event–Indicator Association (Effect)')
-plt.tight_layout()
-plt.savefig(OUT_PNG)
-print(f"Saved matrix to {OUT_CSV} and heatmap to {OUT_PNG}")
+# Trim to non-zero rows/cols
+mat_trim = mat.loc[(mat.sum(axis=1)!=0), (mat.sum(axis=0)!=0)]
+mat_trim.to_csv(OUT_TRIM)
+
+# Try plotting heatmap; fallback gracefully if matplotlib/seaborn unavailable
+try:
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    OUT_PNG.parent.mkdir(parents=True, exist_ok=True)
+    plt.figure(figsize=(max(8, 0.6*mat_trim.shape[1]), max(6, 0.4*mat_trim.shape[0])))
+    sns.heatmap(mat_trim, cmap='RdBu_r', center=0)
+    plt.title('Event–Indicator Association (non-zero only)')
+    plt.tight_layout()
+    plt.savefig(OUT_PNG)
+    print(f"Saved matrix to {OUT_CSV}, trimmed to {OUT_TRIM}, heatmap to {OUT_PNG}")
+except Exception as e:
+    print(f"Saved matrix to {OUT_CSV} and {OUT_TRIM}. Heatmap skipped: {e}")
