@@ -1,5 +1,5 @@
 
-# Ethiopia Financial Inclusion — Event Impacts, Forecasts, and Dashboard
+# Ethiopia Financial Inclusion Event Impacts, Forecasts, and Dashboard
 
 A reproducible workflow to enrich data, analyze event impacts, generate forecasts (2025–2027), and deliver an interactive Streamlit dashboard.
 
